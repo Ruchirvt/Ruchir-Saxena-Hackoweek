@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz App</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --bg: #F3F4F6;
+            --surface: #FFFFFF;
+            --text: #1F2937;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        h1, h2 {
+            text-align: center;
+            margin-top: 0;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+        button.secondary {
+            background-color: #6B7280;
+        }
+        button.secondary:hover {
+            background-color: #4B5563;
+        }
+        input, select {
+            padding: 0.75rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .option-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .option-group input[type="text"] {
+            flex: 1;
+        }
+        .quiz-option {
+            background: var(--bg);
+            padding: 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #D1D5DB;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .quiz-option:hover {
+            background: #E5E7EB;
+        }
+        #error-msg {
+            color: #DC2626;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="home-section" class="section">
+        <h1>Quiz Master</h1>
+        <button onclick="showSection('create-section')">Create a Quiz</button>
+        <button onclick="startQuiz()" class="secondary">Take the Quiz</button>
+        <p id="quiz-status" style="text-align: center; font-size: 0.9rem; color: #6B7280;">Questions available: 0</p>
+    </div>
+
+    <div id="create-section" class="section hidden">
+        <h2>Add a Question</h2>
+        <input type="text" id="question-input" placeholder="Enter your question here...">
+        
+        <div class="option-group">
+            <input type="radio" name="correct-answer" value="0" checked>
+            <input type="text" id="opt0" placeholder="Option 1">
+        </div>
+        <div class="option-group">
+            <input type="radio" name="correct-answer" value="1">
+            <input type="text" id="opt1" placeholder="Option 2">
+        </div>
+        <div class="option-group">
+            <input type="radio" name="correct-answer" value="2">
+            <input type="text" id="opt2" placeholder="Option 3">
+        </div>
+        <div class="option-group">
+            <input type="radio" name="correct-answer" value="3">
+            <input type="text" id="opt3" placeholder="Option 4">
+        </div>
+
+        <p id="error-msg"></p>
+        <button onclick="addQuestion()">Add Question</button>
+        <button onclick="showSection('home-section')" class="secondary">Done / Back to Home</button>
+    </div>
+
+    <div id="take-section" class="section hidden">
+        <h2>Question <span id="current-q-num">1</span> of <span id="total-q-num"></span></h2>
+        <p id="display-question" style="font-size: 1.2rem; font-weight: bold;"></p>
+        <div id="options-container">
+            </div>
+        <button onclick="nextQuestion()">Next</button>
+        <button onclick="showSection('home-section')" class="secondary">Quit</button>
+    </div>
+
+    <div id="result-section" class="section hidden">
+        <h2>Quiz Complete!</h2>
+        <p style="text-align: center; font-size: 1.5rem;">You scored: <strong id="score-display"></strong></p>
+        <button onclick="startQuiz()">Restart Quiz</button>
+        <button onclick="showSection('home-section')" class="secondary">Back to Home</button>
+    </div>
+</div>
+
+<script>
+    // App State
+    let quizData = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    // DOM Elements
+    const sections = ['home-section', 'create-section', 'take-section', 'result-section'];
+
+    // Utility to switch screens
+    function showSection(sectionId) {
+        sections.forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+        document.getElementById(sectionId).classList.remove('hidden');
+        
+        if(sectionId === 'home-section') {
+            document.getElementById('quiz-status').innerText = `Questions available: ${quizData.length}`;
+        }
+    }
+
+    // --- CREATE LOGIC ---
+    function addQuestion() {
+        const questionText = document.getElementById('question-input').value.trim();
+        const options = [
+            document.getElementById('opt0').value.trim(),
+            document.getElementById('opt1').value.trim(),
+            document.getElementById('opt2').value.trim(),
+            document.getElementById('opt3').value.trim()
+        ];
+        
+        // Find which radio button is checked
+        let correctIndex = 0;
+        const radios = document.getElementsByName('correct-answer');
+        for (let i = 0; i < radios.length; i++) {
+            if (radios[i].checked) {
+                correctIndex = i;
+                break;
+            }
+        }
+
+        const errorMsg = document.getElementById('error-msg');
+
+        // Validation
+        if (!questionText || options.some(opt => opt === "")) {
+            errorMsg.innerText = "Please fill out the question and all 4 options.";
+            return;
+        }
+
+        // Save question
+        quizData.push({
+            question: questionText,
+            options: options,
+            correctAnswer: correctIndex
+        });
+
+        // Clear inputs
+        document.getElementById('question-input').value = "";
+        document.getElementById('opt0').value = "";
+        document.getElementById('opt1').value = "";
+        document.getElementById('opt2').value = "";
+        document.getElementById('opt3').value = "";
+        radios[0].checked = true;
+        
+        errorMsg.style.color = "green";
+        errorMsg.innerText = "Question added successfully!";
+        setTimeout(() => errorMsg.innerText = "", 2000);
+    }
+
+    // --- PLAY LOGIC ---
+    function startQuiz() {
+        if (quizData.length === 0) {
+            alert("Please create some questions first!");
+            return;
+        }
+        currentQuestionIndex = 0;
+        score = 0;
+        showSection('take-section');
+        document.getElementById('total-q-num').innerText = quizData.length;
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        const qData = quizData[currentQuestionIndex];
+        document.getElementById('current-q-num').innerText = currentQuestionIndex + 1;
+        document.getElementById('display-question').innerText = qData.question;
+        
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = ""; // Clear previous options
+
+        qData.options.forEach((opt, index) => {
+            const label = document.createElement('label');
+            label.className = 'quiz-option';
+            label.innerHTML = `
+                <input type="radio" name="quiz-answer" value="${index}">
+                ${opt}
+            `;
+            optionsContainer.appendChild(label);
+        });
+    }
+
+    function nextQuestion() {
+        // Check answer
+        const selectedRadio = document.querySelector('input[name="quiz-answer"]:checked');
+        if (!selectedRadio) {
+            alert("Please select an answer!");
+            return;
+        }
+
+        const selectedAnswer = parseInt(selectedRadio.value);
+        if (selectedAnswer === quizData[currentQuestionIndex].correctAnswer) {
+            score++;
+        }
+
+        // Go to next question or finish
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            finishQuiz();
+        }
+    }
+
+    function finishQuiz() {
+        showSection('result-section');
+        document.getElementById('score-display').innerText = `${score} out of ${quizData.length}`;
+    }
+
+    function downloadExcel(score) {
+    const data = [["Metric", "Value"], ["Quiz Score", score], ["Date", new Date().toLocaleDateString()]];
+    let csvContent = "data:text/csv;charset=utf-8," + data.map(e => e.join(",")).join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "quiz_results.csv");
+    document.body.appendChild(link);
+    link.click();
+    } 
+</script>
+
+</body>
+</html>
