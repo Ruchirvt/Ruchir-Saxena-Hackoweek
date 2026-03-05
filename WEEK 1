@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile - Ruchir Saxena</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #ffffffcc;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        ul {
+            list-style-type: square;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ruchir Saxena</h1>
+
+        <div class="section">
+            <h2>College</h2>
+            <p>Symbiosis Institute of Technology, Nagpur</p>
+        </div>
+
+        <div class="section">
+            <h2>School</h2>
+            <p>The Indian School</p>
+            <p>Class 12: 80%</p>
+            <p>Class 10: 91.2%</p>
+        </div>
+
+        <div class="section">
+            <h2>Interests in Coding</h2>
+            <ul>
+                <li>Proficient in C and Python programming</li>
+                <li>Debugging and error analysis</li>
+                <li>Creating modular, reusable code</li>
+                <li>Building academic tools with LaTeX and HTML</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Hobbies</h2>
+            <ul>
+                <li>Designing creative PowerPoint slides</li>
+                <li>Exploring historical and scientific themes</li>
+                <li>Reading and writing technical content</li>
+                <li>Collaborative quiz and visual design</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
