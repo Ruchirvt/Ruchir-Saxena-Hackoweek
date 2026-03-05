@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rasoi Royale — Menu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #fff8f0;
+      --card: #ffffff;
+      --ink: #2b1d0e;
+      --muted: #6b4f3a;
+      --accent: #b23a2e;   /* deep red */
+      --accent-2: #e0a106; /* saffron gold */
+      --border: #e8d9c7;
+      --shadow: 0 10px 30px rgba(43,29,14,.12);
+    }
+
+    *{ box-sizing: border-box; }
+    body{
+      margin:0;
+      background:
+        radial-gradient(1200px 600px at 10% 10%, #fff2e2 0%, var(--bg) 60%),
+        radial-gradient(900px 500px at 90% 90%, #fff2e2 0%, var(--bg) 60%);
+      color: var(--ink);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+
+    .menu{
+      max-width: 980px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    /* Header */
+    .menu__header{
+      position: relative;
+      padding: 36px 28px 28px;
+      background:
+        linear-gradient(135deg, rgba(178,58,46,.08), rgba(224,161,6,.08)),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 320 180"><g fill="none" stroke="%23e0a106" stroke-opacity=".25"><path d="M0 90c40-30 80-30 120 0s80 30 120 0 80-30 80 0" /><path d="M0 120c40-30 80-30 120 0s80 30 120 0 80-30 80 0" /></g></svg>') center/cover no-repeat;
+      border-bottom: 1px dashed var(--border);
+    }
+    .brand{
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .brand__mark{
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 30%, #ffd36a 0%, #e0a106 40%, #b23a2e 100%);
+      box-shadow: 0 6px 16px rgba(178,58,46,.25);
+      position: relative;
+      isolation: isolate;
+    }
+    .brand__mark::after{
+      content:"";
+      position:absolute; inset:8px;
+      border: 2px solid rgba(255,255,255,.7);
+      border-radius: 50%;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,.08));
+    }
+    .brand__name{
+      font-family: Marcellus, serif;
+      font-size: clamp(28px, 4vw, 40px);
+      letter-spacing: .5px;
+      color: var(--ink);
+    }
+    .brand__tag{
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    /* Ribbon */
+    .ribbon{
+      margin-top: 16px;
+      display: inline-block;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: .4px;
+      box-shadow: 0 6px 16px rgba(224,161,6,.25);
+    }
+
+    /* Sections grid */
+    .menu__grid{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0;
+    }
+    @media (max-width: 780px){
+      .menu__grid{ grid-template-columns: 1fr; }
+    }
+
+    /* Section */
+    .section{
+      padding: 26px 28px;
+      border-right: 1px dashed var(--border);
+      border-bottom: 1px dashed var(--border);
+    }
+    .section:nth-child(2n){ border-right: none; }
+    @media (max-width: 780px){
+      .section{ border-right: none; }
+    }
+
+    .section__title{
+      display:flex; align-items:center; gap:10px;
+      font-family: Marcellus, serif;
+      font-size: 22px;
+      color: var(--accent);
+      margin: 0 0 14px;
+    }
+    .section__title::before{
+      content:"";
+      width: 18px; height: 18px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 2px 8px rgba(178,58,46,.25);
+    }
+
+    /* Items */
+    .item{
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 14px;
+      padding: 12px 0;
+      position: relative;
+    }
+    .item + .item{ border-top: 1px dashed var(--border); }
+    .item__name{
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .item__price{
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .item__desc{
+      grid-column: 1 / -1;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* Footer */
+    .menu__footer{
+      padding: 18px 28px 26px;
+      display:flex; justify-content: space-between; align-items:center; gap:12px;
+      background: linear-gradient(0deg, rgba(224,161,6,.06), transparent);
+    }
+    .note{ color: var(--muted); font-size: 13px; }
+    .contact{
+      display:flex; gap:14px; flex-wrap:wrap;
+      font-size: 13px; color: var(--ink);
+    }
+    .contact span{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 6px 10px; border:1px solid var(--border); border-radius: 999px;
+      background:#fff;
+    }
+
+    /* Subtle hover */
+    .item:hover .item__name{ color: var(--accent-2); }
+    .item:hover .item__price{ color: var(--ink); }
+  </style>
+</head>
+<body>
+  <main class="menu" aria-label="Rasoi Royale Menu">
+    <header class="menu__header">
+      <div class="brand">
+        <div class="brand__mark" aria-hidden="true"></div>
+        <div>
+          <h1 class="brand__name">Rasoi Royale</h1>
+          <p class="brand__tag">Authentic Indian flavours crafted with seasonal ingredients</p>
+        </div>
+      </div>
+      <span class="ribbon">Vegetarian & Non‑Vegetarian • Nagpur Special</span>
+    </header>
+
+    <section class="menu__grid">
+      <!-- Appetizers -->
+      <div class="section">
+        <h2 class="section__title">Appetizers</h2>
+
+        <div class="item">
+          <div class="item__name">Paneer Tikka</div>
+          <div class="item__price">₹260</div>
+          <p class="item__desc">Char-grilled cottage cheese, bell peppers, and onions marinated in spiced yogurt.</p>
+        </div>
+
+        <div class="item">
+          <div class="item__name">Chicken Malai Kebab</div>
+          <div class="item__price">₹320</div>
+          <p class="item__desc">Creamy, melt-in-mouth kebabs with cardamom and cheese—finished over live flame.</p>
+        </div>
+
+        <div class="item">
+          <div class="item__name">Nagpuri Tarri Poha</div>
+          <div class="item__price">₹140</div>
+          <p class="item__desc">Fluffy poha topped with spicy tarri, peanuts, and fresh coriander.</p>
+        </div>
+      </div>
+
+      <!-- Main courses -->
+      <div class="section">
+        <h2 class="section__title">Main courses</h2>
+
+        <div class="item">
+          <div class="item__name">Butter Chicken</div>
+          <div class="item__price">₹380</div>
+          <p class="item__desc">Tandoori chicken simmered in silky tomato‑cashew makhani sauce, finished with butter.</p>
+        </div>
+
+        <div class="item">
+          <div class="item__name">Veg Dum Biryani</div>
+          <div class="item__price">₹320</div>
+          <p class="item__desc">Fragrant basmati layered with vegetables, mint, and saffron—sealed and slow cooked.</p>
+        </div>
+
+        <div class="item">
+          <div class="item__name">Mutton Rogan Josh</div>
+          <div class="item__price">₹460</div>
+          <p class="item__desc">Kashmiri-style lamb curry with aromatic spices and a deep, rich gravy.</p>
+        </div>
+      </div>
+
+      <!-- Breads & sides -->
+      <div class="section">
+        <h2 class="section__title">Breads & sides</h2>
+
+        <div class="item">
+          <div class="item__name">Garlic Naan</div>
+          <div class="item__price">₹70</div>
+          <p class="item__desc">Tandoor-baked naan brushed with garlic butter and coriander.</p>
+        </div>
+
+        <div class="item">
+          <div class="item__name">Tandoori Roti</div>
+          <div class="item__price">₹30</div>
+          <p class="item__desc">Whole-wheat roti cooked in a clay oven for a smoky finish.</p>
+        </div>
+
+        <div class="item">
+          <div class="item__name">Jeera Rice</div>
+          <div class="item__price">₹160</div>
+          <p class="item__desc">Tempered basmati with cumin, ghee, and a hint of bay leaf.</p>
+        </div>
+      </div>
+
+      <!-- Desserts -->
+      <div class="section">
+        <h2 class="section__title">Desserts</h2>
+
+        <div class="item">
+          <div class="item__name">Gulab Jamun</div>
+          <div class="item__price">₹140</div>
+          <p class="item__desc">Soft khoya dumplings soaked in warm cardamom-rose syrup.</p>
+        </div>
+
+        <div class="item">
+          <div class="item__name">Rasmalai</div>
+          <div class="item__price">₹180</div>
+          <p class="item__desc">Delicate paneer discs in saffron milk, topped with pistachios.</p>
+        </div>
+
+        <div class="item">
+          <div class="item__name">Kulfi Falooda</div>
+          <div class="item__price">₹190</div>
+          <p class="item__desc">Traditional kulfi with vermicelli, basil seeds, and rose syrup.</p>
+        </div>
+      </div>
+
+      <!-- Beverages -->
+      <div class="section">
+        <h2 class="section__title">Beverages</h2>
+
+        <div class="item">
+          <div class="item__name">Masala Chai</div>
+          <div class="item__price">₹60</div>
+          <p class="item__desc">Robust tea brewed with ginger, cardamom, and milk.</p>
+        </div>
+
+        <div class="item">
+          <div class="item__name">Sweet Lassi</div>
+          <div class="item__price">₹120</div>
+          <p class="item__desc">Refreshing yogurt drink lightly sweetened and perfumed with rose.</p>
+        </div>
+
+        <div class="item">
+          <div class="item__name">Nimbu Pani</div>
+          <div class="item__price">₹80</div>
+          <p class="item__desc">Classic Indian lemonade with black salt and mint.</p>
+        </div>
+      </div>
+
+      <!-- Chef's specials -->
+      <div class="section">
+        <h2 class="section__title">Chef’s specials</h2>
+
+        <div class="item">
+          <div class="item__name">Tandoori Pomfret</div>
+          <div class="item__price">₹520</div>
+          <p class="item__desc">Whole pomfret marinated in coastal spices, charred to perfection.</p>
+        </div>
+
+        <div class="item">
+          <div class="item__name">Dal Makhani</div>
+          <div class="item__price">₹280</div>
+          <p class="item__desc">Slow-cooked black lentils enriched with butter and cream—overnight simmer.</p>
+        </div>
+
+        <div class="item">
+          <div class="item__name">Kebabs Platter</div>
+          <div class="item__price">₹640</div>
+          <p class="item__desc">Assorted veg & non‑veg kebabs with mint chutney and laccha onions.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="menu__footer">
+      <p class="note">All prices inclusive of taxes • Please inform us of any allergies • Jain options available</p>
+      <div class="contact">
+        <span>📍 Dharampeth, Nagpur</span>
+        <span>⏰ 12:00–23:00</span>
+        <span>☎️ +91 98765 43210</span>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>
